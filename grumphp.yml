@@ -47,7 +47,7 @@ parameters:
             triggered_by: ['php']
 
         phpparser:
-            ignore_patterns: []
+            ignore_patterns: ['config/bundles.php']
             kind: php7
             triggered_by: [php]
             visitors:

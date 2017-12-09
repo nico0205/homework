@@ -8,16 +8,31 @@
 
 namespace App\Entity\CMS;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use App\Entity\Person\Person;
+use App\Traits\TimestampableTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
+ * @ApiResource(attributes={
+ *     "normalization_context"={"groups"={"article"}}
+ * })
+ *
  * @ORM\Entity(repositoryClass="App\Repository\CMS\ArticleRepository")
  * @ORM\Table(name="article", schema="cms")
  */
 class Article
 {
+    use TimestampableTrait;
+
     /**
      * @var int
+     *
+     * @Groups("article")
      *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -28,6 +43,8 @@ class Article
     /**
      * @var string
      *
+     * @Groups({"article","person"})
+     *
      * @ORM\Column(type="string", nullable=false)
      */
     protected $title;
@@ -35,9 +52,31 @@ class Article
     /**
      * @var string
      *
+     * @Gedmo\Slug(fields={"id","title"})
+     *
+     * @Groups("article")
+     *
+     * @ORM\Column(type="string", nullable=false, unique=true)
+     */
+    protected $slug;
+
+    /**
+     * @var string
+     *
+     * @Groups("article")
+     *
      * @ORM\Column(type="string", nullable=false)
      */
     protected $content;
+
+    /**
+     * @var Person
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Person\Person", inversedBy="articles")
+     *
+     * @Groups("article")
+     */
+    protected $author;
 
     /**
      * @return int|null
@@ -82,6 +121,26 @@ class Article
     /**
      * @return string|null
      */
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string $slug
+     *
+     * @return Article
+     */
+    public function setSlug(string $slug): Article
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getContent(): ?string
     {
         return $this->content;
@@ -95,6 +154,26 @@ class Article
     public function setContent(string $content): Article
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getAuthor(): Person
+    {
+        return $this->author;
+    }
+
+    /**
+     * @param Person $author
+     *
+     * @return Article
+     */
+    public function setAuthor(?Person $author = null): Article
+    {
+        $this->author = $author;
 
         return $this;
     }

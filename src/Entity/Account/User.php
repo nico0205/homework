@@ -8,16 +8,25 @@
 
 namespace App\Entity\Account;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Person\Person;
+use App\Traits\TimestampableTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @ApiResource(attributes={
+ *      "normalization_context"={"groups"={"user"}}
+ * })
+ *
  * @ORM\Entity(repositoryClass="App\Repository\Account\UserRepository")
- * @ORM\Table(name="user", schema="account")
+ * @ORM\Table(name="app_user", schema="account")
  */
 class User implements UserInterface
 {
+    use TimestampableTrait;
+
     /**
      * @var int
      *
@@ -31,6 +40,8 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(type="string", unique=true, nullable=false)
+     *
+     * @Groups({"user","person"})
      */
     protected $username;
 
@@ -38,6 +49,8 @@ class User implements UserInterface
      * @var array
      *
      * @ORM\Column(type="array")
+     *
+     * @Groups("user")
      */
     protected $roles;
 
@@ -57,11 +70,15 @@ class User implements UserInterface
      * @var bool
      *
      * @ORM\Column(type="boolean")
+     *
+     * @Groups("user")
      */
     protected $enabled = true;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Person\Person", inversedBy="user")
+     * @ORM\OneToOne(targetEntity="App\Entity\Person\Person", inversedBy="user", cascade={"PERSIST"})
+     *
+     * @Groups("user")
      */
     protected $person;
 

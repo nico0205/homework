@@ -5,17 +5,23 @@
     "license": "proprietary",
     "require": {
         "php": "^7.1",
+        "api-platform/api-pack": "^1.0",
         "doctrine/doctrine-bundle": "^1.8",
         "doctrine/doctrine-migrations-bundle": "^1.3",
         "doctrine/orm": "^2.5",
+        "stof/doctrine-extensions-bundle": "^1.2",
         "symfony/console": "^3.4",
         "symfony/flex": "^1.0",
         "symfony/framework-bundle": "^3.4",
         "symfony/lts": "^3",
+        "symfony/monolog-bundle": "^3.1",
+        "symfony/profiler-pack": "^1.0",
         "symfony/security-bundle": "^3.4",
+        "symfony/twig-bundle": "^3.4",
         "symfony/yaml": "^3.4"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.0",
         "escapestudios/symfony2-coding-standard": "3.x-dev",
         "nikic/php-parser": "^3.1",
         "phpmd/phpmd": "^2.6",
@@ -52,6 +58,12 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "init-db": [
+            "php bin/console doctrine:database:create --if-not-exists",
+            "php bin/console doctrine:schema:drop --force",
+            "php bin/console doctrine:schema:update --force",
+            "php bin/console doctrine:fixtures:load -n"
         ]
     },
     "conflict": {

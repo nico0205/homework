@@ -8,15 +8,27 @@
 
 namespace App\Entity\Person;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Account\User;
+use App\Entity\CMS\Article;
+use App\Traits\TimestampableTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @ApiResource(attributes={
+ *     "normalization_context"={"groups"={"person"}}
+ * })
+ *
  * @ORM\Entity(repositoryClass="App\Repository\Person\PersonRepository")
  * @ORM\Table(name="person", schema="person")
  */
 class Person
 {
+    use TimestampableTrait;
+
     /**
      * @var int
      *
@@ -30,13 +42,17 @@ class Person
      * @var string
      *
      * @ORM\Column(type="string", nullable=false)
+     *
+     * @Groups("person")
      */
-    protected $name;
+    protected $lastname;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", nullable=false)
+     *
+     * @Groups("person")
      */
     protected $firstname;
 
@@ -44,20 +60,52 @@ class Person
      * @var string
      *
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @Groups("person")
      */
     protected $middlename;
 
     /**
      * @var string
      *
+     * @Groups({"article","user"})
+     */
+    protected $fullname;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @Groups("person")
      */
     protected $address;
 
     /**
+     * @var User
+     *
      * @ORM\OneToOne(targetEntity="App\Entity\Account\User", mappedBy="person")
+     *
+     * @Groups("person")
      */
     protected $user;
+
+    /**
+     * @var Article[]|Collection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\CMS\Article", mappedBy="author")
+     *
+     * @Groups("person")
+     */
+    protected $articles;
+
+    /**
+     * Person constructor.
+     */
+    public function __construct()
+    {
+        $this->articles = new ArrayCollection();
+    }
 
     /**
      * @return int|null
@@ -82,19 +130,19 @@ class Person
     /**
      * @return string|null
      */
-    public function getName(): ?string
+    public function getLastname(): ?string
     {
-        return $this->name;
+        return $this->lastname;
     }
 
     /**
-     * @param string $name
+     * @param string $lastname
      *
      * @return Person
      */
-    public function setName(string $name): Person
+    public function setLastname(string $lastname): Person
     {
-        $this->name = $name;
+        $this->lastname = $lastname;
 
         return $this;
     }
@@ -140,6 +188,18 @@ class Person
     }
 
     /**
+     * @return string
+     */
+    public function getFullname(): string
+    {
+        if ($this->middlename) {
+            return sprintf('%s %s %s', $this->firstname, $this->middlename, $this->lastname);
+        }
+
+        return sprintf('%s %s', $this->firstname, $this->lastname);
+    }
+
+    /**
      * @return string|null
      */
     public function getAddress(): ?string
@@ -168,13 +228,47 @@ class Person
     }
 
     /**
-     * @param mixed $user
+     * @param User $user
      *
      * @return Person
      */
     public function setUser(User $user): Person
     {
         $user->setPerson($this);
+
+        return $this;
+    }
+
+    /**
+     * @return Article[]|Collection
+     */
+    public function getArticles(): Collection
+    {
+        return $this->articles;
+    }
+
+    /**
+     * @param Article $article
+     *
+     * @return Person
+     */
+    public function addArticles(Article $article): Person
+    {
+        $this->articles->add($article);
+        $article->setAuthor($this);
+
+        return $this;
+    }
+
+    /**
+     * @param Article $article
+     *
+     * @return Person
+     */
+    public function removeArticle(Article $article): Person
+    {
+        $this->articles->remove($article);
+        $article->setAuthor();
 
         return $this;
     }
