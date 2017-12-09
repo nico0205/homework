@@ -1,0 +1,58 @@
+parameters:
+    git_dir: .
+    bin_dir: vendor/bin
+    process_async_wait: 10000
+    process_timeout: 600
+    ascii:
+        failed: ~
+        succeeded: ~
+    tasks:
+        composer:
+            file: ./composer.json
+            no_check_all: false
+            no_check_lock: false
+            no_check_publish: false
+            no_local_repository: false
+            with_dependencies: false
+            strict: false
+
+        securitychecker:
+            lockfile: ./composer.lock
+            format: ~
+            end_point: ~
+            timeout: ~
+            run_always: false
+
+        phpcs:
+            standard: 'vendor/escapestudios/symfony2-coding-standard/Symfony/'
+            whitelist_patterns:
+              - '/^src\//'
+
+        git_blacklist:
+            keywords:
+              - 'dump('
+            triggered_by: [twig]
+
+        phpcpd:
+            directory: '.'
+            exclude: ['vendor', 'var']
+            fuzzy: false
+            min_lines: 5
+            min_tokens: 70
+            triggered_by: ['php']
+
+        phpmd:
+            exclude: ['Tests', 'tests', 'AppKernel', 'AppCache', 'DataCollector']
+            ruleset: ['phpmd.xml']
+            triggered_by: ['php']
+
+        phpparser:
+            ignore_patterns: []
+            kind: php7
+            triggered_by: [php]
+            visitors:
+                declare_strict_types: ~
+                no_exit_statements: ~
+                forbidden_function_calls:
+                    blacklist:
+                      - 'var_dump'
