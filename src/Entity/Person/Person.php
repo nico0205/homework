@@ -19,7 +19,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(attributes={
- *     "normalization_context"={"groups"={"person"}}
+ *     "normalization_context"={"groups"={"person"}},
+ *     "denormalization_context"={"groups"={"write_person"}}
+ * })
  * })
  *
  * @ORM\Entity(repositoryClass="App\Repository\Person\PersonRepository")
@@ -43,7 +45,7 @@ class Person
      *
      * @ORM\Column(type="string", nullable=false)
      *
-     * @Groups("person")
+     * @Groups({"person","write_person","write_user"})
      */
     protected $lastname;
 
@@ -52,7 +54,7 @@ class Person
      *
      * @ORM\Column(type="string", nullable=false)
      *
-     * @Groups("person")
+     * @Groups({"person","write_person","write_user"})
      */
     protected $firstname;
 
@@ -61,7 +63,7 @@ class Person
      *
      * @ORM\Column(type="string", nullable=true)
      *
-     * @Groups("person")
+     * @Groups({"person","write_person","write_user"})
      */
     protected $middlename;
 
@@ -77,7 +79,7 @@ class Person
      *
      * @ORM\Column(type="string", nullable=true)
      *
-     * @Groups("person")
+     * @Groups({"person","write_person","write_user"})
      */
     protected $address;
 

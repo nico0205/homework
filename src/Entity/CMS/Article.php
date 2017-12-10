@@ -19,7 +19,8 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * @ApiResource(attributes={
- *     "normalization_context"={"groups"={"article"}}
+ *     "normalization_context"={"groups"={"article"}},
+ *     "denormalization_context"={"groups"={"write_artice"}}
  * })
  *
  * @ORM\Entity(repositoryClass="App\Repository\CMS\ArticleRepository")
@@ -43,7 +44,7 @@ class Article
     /**
      * @var string
      *
-     * @Groups({"article","person"})
+     * @Groups({"article","person","write_artice"})
      *
      * @ORM\Column(type="string", nullable=false)
      */
@@ -63,7 +64,7 @@ class Article
     /**
      * @var string
      *
-     * @Groups("article")
+     * @Groups({"article","write_artice"})
      *
      * @ORM\Column(type="string", nullable=false)
      */
@@ -159,9 +160,9 @@ class Article
     }
 
     /**
-     * @return Person
+     * @return Person|null
      */
-    public function getAuthor(): Person
+    public function getAuthor(): ?Person
     {
         return $this->author;
     }

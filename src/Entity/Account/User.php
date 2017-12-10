@@ -17,7 +17,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(attributes={
- *      "normalization_context"={"groups"={"user"}}
+ *      "normalization_context"={"groups"={"user"}},
+ *     "denormalization_context"={"groups"={"write_user"}}
  * })
  *
  * @ORM\Entity(repositoryClass="App\Repository\Account\UserRepository")
@@ -41,7 +42,7 @@ class User implements UserInterface
      *
      * @ORM\Column(type="string", unique=true, nullable=false)
      *
-     * @Groups({"user","person"})
+     * @Groups({"user","person","write_user"})
      */
     protected $username;
 
@@ -63,6 +64,8 @@ class User implements UserInterface
 
     /**
      * @var string
+     *
+     * @Groups("write_user")
      */
     protected $plainPassword;
 
@@ -78,7 +81,7 @@ class User implements UserInterface
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Person\Person", inversedBy="user", cascade={"PERSIST"})
      *
-     * @Groups("user")
+     * @Groups({"user","write_user"})
      */
     protected $person;
 
