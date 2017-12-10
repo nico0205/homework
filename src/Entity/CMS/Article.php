@@ -9,18 +9,17 @@
 namespace App\Entity\CMS;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Entity\Person\Person;
 use App\Traits\TimestampableTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(attributes={
  *     "normalization_context"={"groups"={"article"}},
- *     "denormalization_context"={"groups"={"write_artice"}}
+ *     "denormalization_context"={"groups"={"write_article"}}
  * })
  *
  * @ORM\Entity(repositoryClass="App\Repository\CMS\ArticleRepository")
@@ -44,7 +43,7 @@ class Article
     /**
      * @var string
      *
-     * @Groups({"article","person","write_artice"})
+     * @Groups({"article","person","write_article"})
      *
      * @ORM\Column(type="string", nullable=false)
      */
@@ -64,7 +63,7 @@ class Article
     /**
      * @var string
      *
-     * @Groups({"article","write_artice"})
+     * @Groups({"article","write_article"})
      *
      * @ORM\Column(type="string", nullable=false)
      */
@@ -78,6 +77,19 @@ class Article
      * @Groups("article")
      */
     protected $author;
+
+    /**
+     *
+     * @var Media
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\CMS\Media", inversedBy="articles", cascade={"PERSIST"})
+     * @ORM\JoinColumn(nullable=true)
+     *
+     * @Assert\Valid()
+     *
+     * @Groups({"article","write_article"})
+     */
+    protected $media;
 
     /**
      * @return int|null
@@ -175,6 +187,26 @@ class Article
     public function setAuthor(?Person $author = null): Article
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Media|null
+     */
+    public function getMedia(): ?Media
+    {
+        return $this->media;
+    }
+
+    /**
+     * @param Media|null $media
+     *
+     * @return Article
+     */
+    public function setMedia(?Media $media = null): Article
+    {
+        $this->media = $media;
 
         return $this;
     }

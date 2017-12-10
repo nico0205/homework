@@ -10,6 +10,7 @@ namespace App\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Trait TimestampableTrait
@@ -22,6 +23,8 @@ trait TimestampableTrait
      * @Gedmo\Timestampable(on="create")
      *
      * @ORM\Column(type="datetimetz")
+     *
+     * @Groups({"article","person","user","media"})
      */
     protected $createdAt;
 
@@ -31,6 +34,8 @@ trait TimestampableTrait
      * @Gedmo\Timestampable(on="update")
      *
      * @ORM\Column(type="datetimetz")
+     *
+     * @Groups({"article","person","user","media"})
      */
     protected $updatedAt;
 
