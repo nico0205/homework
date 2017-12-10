@@ -80,3 +80,30 @@ Seuls les admins peuvent créer des users:
 
 - POST /user
 - DELETE /users
+
+### Se connecter avec le client HTTP
+
+Récupération d'un token via CURL 
+```curl
+curl -X POST \
+  http:///%yourDomain%/login_check \
+  -H 'accept: application/ld+json, application/json, text/html' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -H 'postman-token: e7e0e2d2-8854-6868-aa1a-f8358cf1e0d9' \
+  -d '{
+	"username": "writer",
+	"password": "writer"
+}'
+```
+Copier le token, puis sur le client HTTP
+
+![alt text](doc/authorization1.png "Description goes here")
+
+Coller le token précédé de "Bearer"
+
+![alt text](doc/authorization2.png "Description goes here")
+
+
+
+
