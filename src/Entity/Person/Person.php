@@ -18,9 +18,19 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource(attributes={
- *     "normalization_context"={"groups"={"person"}},
- *     "denormalization_context"={"groups"={"write_person"}}
+ * @ApiResource(
+ *     collectionOperations={
+ *      "get"={"method"="GET"},
+ *      "post"={"method"="POST", "access_control"="is_granted('ROLE_ADMIN')"}
+ *     },
+ *     itemOperations={
+ *      "get"={"method"="GET"},
+ *      "put"={"method"="PUT", "access_control"="is_granted('ROLE_ADMIN')"},
+ *      "delete"={"method"="DELETE", "access_control"="is_granted('ROLE_ADMIN')"}
+ *     },
+ *     attributes={
+ *      "normalization_context"={"groups"={"person"}},
+ *      "denormalization_context"={"groups"={"write_person"}}
  * })
  * })
  *

@@ -26,6 +26,6 @@ class IndexController extends AbstractController
      */
     public function index(): Response
     {
-        return new Response('<html><body>Salut</body></html>');
+        return $this->redirectToRoute('api_entrypoint');
     }
 }

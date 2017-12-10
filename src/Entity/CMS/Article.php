@@ -17,9 +17,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource(attributes={
- *     "normalization_context"={"groups"={"article"}},
- *     "denormalization_context"={"groups"={"write_article"}}
+ * @ApiResource(
+ *     collectionOperations={
+ *      "get"={"method"="GET"},
+ *      "post"={"method"="POST", "access_control"="is_granted('ROLE_WRITER')"}
+ *     },
+ *     itemOperations={
+ *      "get"={"method"="GET"},
+ *      "put"={"method"="PUT", "access_control"="is_granted('ROLE_WRITER')"},
+ *      "delete"={"method"="DELETE", "access_control"="is_granted('ROLE_WRITER')"}
+ *     },
+ *     attributes={
+ *      "normalization_context"={"groups"={"article"}},
+ *      "denormalization_context"={"groups"={"write_article"}}
  * })
  *
  * @ORM\Entity(repositoryClass="App\Repository\CMS\ArticleRepository")

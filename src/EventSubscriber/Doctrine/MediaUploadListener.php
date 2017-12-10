@@ -103,14 +103,7 @@ class MediaUploadListener implements EventSubscriber
 
         $this->filesystem->touch($path);
 
-        // raw data is expected to be data:image/png;base64,AAAABBBCCCDDEEF
-        // we first extract encoding then data
-        // we could eventually inspect file type there and throw exception against some allowed types
-        $data = explode(';', $uploadable->getRawContent())[1];
-        // then we extract only raw data
-        $data = explode(',', $data)[1];
-
-        $this->filesystem->dumpFile($path, base64_decode($data));
+        $this->filesystem->dumpFile($path, base64_decode($uploadable->getRawContent()));
         $relPath = $this->filesystem->makePathRelative($path, $this->kernelRootDir.'/public/');
 
         $uploadable->setFileName($uploadable->getFileName());

@@ -1,6 +1,9 @@
 api_platform:
     title: 'Blog API'
-    description: 'An api designed to post article'
+    description: 'An api designed to perform CRUD on articles'
     version: '0.0.1'
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
+    swagger:
+         api_keys:
+             - { name: 'Authorization', type: 'header' }

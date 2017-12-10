@@ -6,3 +6,6 @@ api:
     resource: '.'
     type: 'api_platform'
     prefix: '/api'
+
+login_check:
+    path: /login_check

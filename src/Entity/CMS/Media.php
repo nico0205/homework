@@ -18,9 +18,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource(attributes={
- *     "normalization_context"={"groups"={"media"}},
- *     "denormalization_context"={"groups"={"write_media"}}
+ * @ApiResource(
+ *     collectionOperations={
+ *      "get"={"method"="GET"},
+ *      "post"={"method"="POST", "access_control"="is_granted('ROLE_WRITER')"}
+ *     },
+ *     itemOperations={
+ *      "get"={"method"="GET"},
+ *      "delete"={"method"="DELETE", "access_control"="is_granted('ROLE_WRITER')"}
+ *     },
+ *     attributes={
+ *      "normalization_context"={"groups"={"media"}},
+ *      "denormalization_context"={"groups"={"write_media"}}
  * })
  *
  * @ORM\Entity
@@ -32,7 +41,7 @@ class Media implements UploadableInterface
 
     /**
      * @var int
-
+     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
@@ -55,11 +64,6 @@ class Media implements UploadableInterface
 
     /**
      * @var string Base 64 encoded content image
-     *
-     * @Assert\Regex(
-     *     pattern="/data:image\/(?i)(jpg|jpeg|png|gif|bmp);base64,[^\s]+/",
-     *     message="Raw data must be base64 encoded and match types (jpg/jpeg/png/gif/bmp)"
-     * )
      *
      * @Groups({"write_media","write_article"})
      */

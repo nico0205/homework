@@ -12,14 +12,18 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Person\Person;
 use App\Traits\TimestampableTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource(attributes={
+ * @ApiResource(
+ *     attributes={
  *      "normalization_context"={"groups"={"user"}},
- *     "denormalization_context"={"groups"={"write_user"}}
+ *      "denormalization_context"={"groups"={"write_user"}}
  * })
+ *
+ * @UniqueEntity(fields={"username"})
  *
  * @ORM\Entity(repositoryClass="App\Repository\Account\UserRepository")
  * @ORM\Table(name="app_user", schema="account")
@@ -90,7 +94,7 @@ class User implements UserInterface
      */
     public function __construct()
     {
-        $this->roles = ['ROLE_USER'];
+        $this->roles = [];
     }
 
     /**
@@ -156,7 +160,7 @@ class User implements UserInterface
      */
     public function addRole(string $role): User
     {
-        if ($this->hasRole($role)) {
+        if (!$this->hasRole($role)) {
             $this->roles[] = $role;
         }
 

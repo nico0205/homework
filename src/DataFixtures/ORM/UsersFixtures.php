@@ -18,6 +18,25 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class UsersFixtures extends Fixture
 {
+    public static $users = [
+        'admin' => [
+            'firstname' => 'Luke',
+            'lastname' => 'Skywalker',
+            'address' => 'Tatooine',
+            'username' => 'root',
+            'password' => 'root',
+            'role' => 'ROLE_ADMIN',
+        ],
+        'writer' => [
+            'firstname' => 'Admiral',
+            'lastname' => 'Ackbar',
+            'address' => 'Endor',
+            'username' => 'writer',
+            'password' => 'writer',
+            'role' => 'ROLE_WRITER',
+        ],
+    ];
+
     /**
      * Load data fixtures with the passed EntityManager
      *
@@ -25,19 +44,23 @@ class UsersFixtures extends Fixture
      */
     public function load(ObjectManager $manager): void
     {
-        $person = (new Person())
-            ->setFirstname('Luke')
-            ->setLastname('Skywalker')
-            ->setAddress('Tatooine');
+        foreach (static::$users as $userSlug => $info) {
+            $person = (new Person())
+                ->setFirstname($info['firstname'])
+                ->setLastname($info['lastname'])
+                ->setAddress($info['address']);
 
-        $user = (new User())
-            ->setUsername('root')
-            ->setPlainPassword('root')
-            ->setPerson($person);
+            $user = (new User())
+                ->setUsername($info['username'])
+                ->setPlainPassword($info['password'])
+                ->setPerson($person)
+                ->addRole($info['role']);
 
-        $manager->persist($user);
-        $this->setReference('user1', $user);
-        $this->setReference('person1', $person);
+            $manager->persist($user);
+            $this->setReference('user_'.$userSlug, $user);
+            $this->setReference('person_'.$userSlug, $person);
+        }
+
         $manager->flush();
     }
 }
