@@ -34,7 +34,7 @@ sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:$(whoami):rwX public
 ```
 
 ## Erreur d'authentication sur l'API avec APache
-Par défaut Apache semble virer le header Authorization.
+Par défaut Apache semble virer le header Authorization. Ce qui bloque l'authentication via le token JWT
 
 Voici la conf à ajouter dans le vhost pour empêcher ce comportement:
 ```apacheconfig
@@ -57,14 +57,14 @@ Les routes accessibles publiquement :
 - GET /articles
 - GET /article/{id}
 
-Les routes de création d'article ou media sont protégés. Seuls les admin ou writer ont le droit dessus
+Les routes de création d'article ou media sont protégées. Seuls les admin ou writer ont un droit d'écriture
 
 - POST /articles
 - POST /media
 - PUT /article/{id}
 - DELETE /article/{id}
 
-Seuls les admins peuvent créer des user:
+Seuls les admins peuvent créer des users:
 
 - POST /user
 - DELETE /users
