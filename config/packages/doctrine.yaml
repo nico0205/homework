@@ -8,8 +8,8 @@ parameters:
 doctrine:
     dbal:
         # configure these for your database server
-        driver: 'pdo_pgsql'
-        server_version: '9.6'
+        driver: '%env(resolve:DATABASE_DRIVER)%'
+        server_version: '%env(resolve:DATABASE_VERSION)%'
         charset: utf8
 
         # With Symfony 3.3, remove the `resolve:` prefix
