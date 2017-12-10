@@ -12,7 +12,7 @@ Création d'une API REST avec gestion de la sécurité via token JWT permettant 
 composer install
 ```
 
-###Création de la base de données avec fixtures
+### Création de la base de données avec fixtures
 
 Création du schema, chargements des fixtures
 
@@ -42,7 +42,7 @@ RewriteCond %{HTTP:Authorization} ^(.*)
 RewriteRule .* - [e=HTTP_AUTHORIZATION:%1] 
 ```
 
-##Utilisation
+## Utilisation
 
 Doc HTTP disponible : http://%yourDomain%/api
 Swagger doc disponible : http://%yourDomain%/docs.json
