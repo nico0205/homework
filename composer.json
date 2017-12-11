@@ -16,6 +16,7 @@
         "symfony/framework-bundle": "^3.4",
         "symfony/lts": "^3",
         "symfony/monolog-bundle": "^3.1",
+        "symfony/phpunit-bridge": "^3.4",
         "symfony/profiler-pack": "^1.0",
         "symfony/security-bundle": "^3.4",
         "symfony/twig-bundle": "^3.4",
@@ -25,6 +26,7 @@
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.0",
         "escapestudios/symfony2-coding-standard": "3.x-dev",
+        "liip/functional-test-bundle": "^1.8",
         "nikic/php-parser": "^3.1",
         "phpmd/phpmd": "^2.6",
         "phpro/grumphp": "^0.12.1",

@@ -42,8 +42,6 @@ class Article
     /**
      * @var int
      *
-     * @Groups("article")
-     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")

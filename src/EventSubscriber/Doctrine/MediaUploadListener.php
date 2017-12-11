@@ -62,6 +62,8 @@ class MediaUploadListener implements EventSubscriber
     /**
      * @param LifecycleEventArgs $args
      *
+     * @throws \App\Exceptions\NotAnUrlException
+     * @throws \App\Exceptions\NotAnImageException
      * @throws \App\Exceptions\CurlBase64ImageException
      * @throws \Symfony\Component\Filesystem\Exception\IOException
      */
@@ -78,6 +80,8 @@ class MediaUploadListener implements EventSubscriber
     /**
      * @param LifecycleEventArgs $args
      *
+     * @throws \App\Exceptions\NotAnUrlException
+     * @throws \App\Exceptions\NotAnImageException
      * @throws \App\Exceptions\CurlBase64ImageException
      * @throws \Doctrine\ORM\ORMInvalidArgumentException
      * @throws \Symfony\Component\Filesystem\Exception\IOException
@@ -101,6 +105,8 @@ class MediaUploadListener implements EventSubscriber
      *
      * @throws \Symfony\Component\Filesystem\Exception\IOException
      * @throws \App\Exceptions\CurlBase64ImageException
+     * @throws \App\Exceptions\NotAnImageException
+     * @throws \App\Exceptions\NotAnUrlException
      */
     private function processUpload(UploadableInterface $uploadable): void
     {
@@ -115,6 +121,8 @@ class MediaUploadListener implements EventSubscriber
         if ($uploadable->getExternalLink()) {
             $uploadable->setRawContent($this->base64Image->getBase64EncodedImage($uploadable->getExternalLink()));
         }
+
+        $this->createFileFromRaw($uploadable);
     }
 
     /**
