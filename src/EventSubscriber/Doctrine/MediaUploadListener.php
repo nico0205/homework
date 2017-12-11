@@ -8,7 +8,9 @@
 
 namespace App\EventSubscriber\Doctrine;
 
+use App\Entity\CMS\Media;
 use App\Interfaces\UploadableInterface;
+use App\Service\CurlBase64Image;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Symfony\Component\Filesystem\Filesystem;
@@ -29,15 +31,22 @@ class MediaUploadListener implements EventSubscriber
     private $kernelRootDir;
 
     /**
+     * @var CurlBase64Image
+     */
+    private $base64Image;
+
+    /**
      * MediaUploadListener constructor.
      *
-     * @param Filesystem $filesystem
-     * @param string     $kernelRootDir
+     * @param Filesystem      $filesystem
+     * @param CurlBase64Image $base64Image
+     * @param string          $kernelRootDir
      */
-    public function __construct(Filesystem $filesystem, string $kernelRootDir)
+    public function __construct(Filesystem $filesystem, CurlBase64Image $base64Image, string $kernelRootDir)
     {
         $this->filesystem = $filesystem;
         $this->kernelRootDir = $kernelRootDir;
+        $this->base64Image = $base64Image;
     }
 
     /**
@@ -53,6 +62,7 @@ class MediaUploadListener implements EventSubscriber
     /**
      * @param LifecycleEventArgs $args
      *
+     * @throws \App\Exceptions\CurlBase64ImageException
      * @throws \Symfony\Component\Filesystem\Exception\IOException
      */
     public function prePersist(LifecycleEventArgs $args): void
@@ -62,12 +72,13 @@ class MediaUploadListener implements EventSubscriber
             return;
         }
 
-        $this->createFileFromRaw($entity);
+        $this->processUpload($entity);
     }
 
     /**
      * @param LifecycleEventArgs $args
      *
+     * @throws \App\Exceptions\CurlBase64ImageException
      * @throws \Doctrine\ORM\ORMInvalidArgumentException
      * @throws \Symfony\Component\Filesystem\Exception\IOException
      */
@@ -78,7 +89,7 @@ class MediaUploadListener implements EventSubscriber
             return;
         }
 
-        $this->createFileFromRaw($entity);
+        $this->processUpload($entity);
 
         $em = $args->getEntityManager();
         $meta = $em->getClassMetadata(\get_class($entity));
@@ -89,10 +100,31 @@ class MediaUploadListener implements EventSubscriber
      * @param UploadableInterface $uploadable
      *
      * @throws \Symfony\Component\Filesystem\Exception\IOException
+     * @throws \App\Exceptions\CurlBase64ImageException
+     */
+    private function processUpload(UploadableInterface $uploadable): void
+    {
+        if ($uploadable->getRawContent()) {
+            $this->createFileFromRaw($uploadable);
+
+            // if we get raw content we don't create file from URL even if it's provided
+
+            return;
+        }
+
+        if ($uploadable->getExternalLink()) {
+            $uploadable->setRawContent($this->base64Image->getBase64EncodedImage($uploadable->getExternalLink()));
+        }
+    }
+
+    /**
+     * @param UploadableInterface $uploadable
+     *
+     * @throws \Symfony\Component\Filesystem\Exception\IOException
      */
     private function createFileFromRaw(UploadableInterface $uploadable): void
     {
-        $mediaLocation = $this->kernelRootDir.'/public/media/uploads/';
+        $mediaLocation = $this->kernelRootDir.Media::BASE_FOLDER_MEDIA;
         if (!$this->filesystem->exists($mediaLocation)) {
             $this->filesystem->mkdir($mediaLocation);
         }

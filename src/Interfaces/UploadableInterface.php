@@ -21,13 +21,22 @@ interface UploadableInterface
     public function getRawContent(): ?string;
 
     /**
+     * @param string $rawContent
+     */
+    public function setRawContent(string $rawContent);
+
+    /**
+     * @return string|null
+     */
+    public function getExternalLink(): ?string;
+
+    /**
      * @return string|null
      */
     public function getFileName(): ?string;
 
     /**
      * @param string $filename
-     *
      */
     public function setFileName(string $filename);
 

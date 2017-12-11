@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ApiResource(
@@ -39,6 +40,8 @@ class Media implements UploadableInterface
 {
     use TimestampableTrait;
 
+    public const BASE_FOLDER_MEDIA = '/public/media/uploads/';
+
     /**
      * @var int
      *
@@ -53,6 +56,7 @@ class Media implements UploadableInterface
      *
      * @ORM\Column(type="string", nullable=false)
      *
+     * @Assert\NotBlank()
      * @Assert\Regex(
      *     pattern="([^\s]+(\.(?i)(jpg|jpeg|png|gif|bmp))$)",
      *     message="Filename must have an name and an extension (jpg/jpeg/png/gif/bmp)"
@@ -68,6 +72,15 @@ class Media implements UploadableInterface
      * @Groups({"write_media","write_article"})
      */
     protected $rawContent;
+
+    /**
+     * @var string
+     *
+     * @Assert\Url()
+     *
+     * @Groups({"write_media","write_article"})
+     */
+    protected $externalLink;
 
     /**
      * @var string
@@ -207,5 +220,45 @@ class Media implements UploadableInterface
         $this->rawContent = $rawContent;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalLink(): string
+    {
+        return $this->externalLink;
+    }
+
+    /**
+     * @param string $externalLink
+     *
+     * @return Media
+     */
+    public function setExternalLink(string $externalLink): Media
+    {
+        $this->externalLink = $externalLink;
+
+        return $this;
+    }
+
+    /**
+     * @Assert\Callback()
+     *
+     * @param ExecutionContextInterface $context
+     */
+    public function validate(ExecutionContextInterface $context)
+    {
+        if (!$this->rawContent && !$this->externalLink) {
+            $context->buildViolation('At least rawContent or externalLink should be set')
+                ->atPath('rawContent')
+                ->addViolation();
+        }
+
+        if ($this->rawContent && $this->externalLink) {
+            $context->buildViolation('Either use rawContent to upload image or use external link but not both')
+                ->atPath('externalLink')
+                ->addViolation();
+        }
     }
 }
