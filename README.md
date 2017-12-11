@@ -92,7 +92,7 @@ php bin/console server:r
 
 ### Configuration NGINX avec PHP-FPM
 
-```json
+```text
 server {
     server_name domain.tld www.domain.tld;
     root /var/www/project/public;
