@@ -20,6 +20,7 @@ class UsersFixtures extends Fixture
 {
     public static $users = [
         'admin' => [
+            'slug' => 'admin',
             'firstname' => 'Luke',
             'lastname' => 'Skywalker',
             'address' => 'Tatooine',
@@ -28,6 +29,7 @@ class UsersFixtures extends Fixture
             'role' => 'ROLE_ADMIN',
         ],
         'writer' => [
+            'slug' => 'writer',
             'firstname' => 'Admiral',
             'lastname' => 'Ackbar',
             'address' => 'Endor',

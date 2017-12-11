@@ -5,6 +5,7 @@ Création d'une API REST avec gestion de la sécurité via token JWT permettant 
 ## Pré-requis
 
 - PHP 7.1
+- php7.1-sqlite (pour les tests)
 
 ## Installation
 
@@ -92,7 +93,7 @@ php bin/console server:r
 
 ### Configuration NGINX avec PHP-FPM
 
-```json
+```text
 server {
     server_name domain.tld www.domain.tld;
     root /var/www/project/public;
@@ -191,6 +192,18 @@ Copier le token, puis sur le client HTTP
 Coller le token précédé de "Bearer"
 
 ![alt text](doc/authorization2.png "Description goes here")
+
+## Tests unitaires et fonctionnels
+
+Les tests sont dans le dossier /tests à la racine du projet
+
+Sont testés, toutes les routes de l'api avec la gestion des authorisations ainsi que le service de téléchargement d'image.
+
+Pour éxécuter les tests
+
+```
+php bin/phpunit
+```
 
 
 

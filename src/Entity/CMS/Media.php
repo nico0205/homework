@@ -74,7 +74,7 @@ class Media implements UploadableInterface
     protected $rawContent;
 
     /**
-     * @var string
+     * @var string Link URL to image
      *
      * @Assert\Url()
      *

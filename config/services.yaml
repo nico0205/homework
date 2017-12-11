@@ -33,3 +33,9 @@ services:
         Doctrine\Common\EventSubscriber:
             tags:
                 - { name: doctrine.event_subscriber, connection: default }
+
+    # set public true to access it via test
+    # there should be a better way but haven\'t found it :(
+    App\Service\CurlBase64Image:
+        class: App\Service\CurlBase64Image
+        public: true

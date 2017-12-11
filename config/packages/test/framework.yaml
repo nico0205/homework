@@ -1,4 +1,8 @@
 framework:
+    session:
+        handler_id:  ~
+        storage_id: session.storage.mock_file
+        name: MOCKSESSID
     test: ~
     #session:
     #    storage_id: session.storage.mock_file
